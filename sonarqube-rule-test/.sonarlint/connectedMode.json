@@ -1,0 +1,4 @@
+{
+    "sonarQubeUri": "http://localhost:9000",
+    "projectKey": "sonarqube-rule-test"
+}
