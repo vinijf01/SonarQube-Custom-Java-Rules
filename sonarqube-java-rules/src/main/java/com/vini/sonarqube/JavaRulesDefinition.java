@@ -16,28 +16,30 @@ public class JavaRulesDefinition implements RulesDefinition {
                 .createRepository(REPOSITORY_KEY, "java")
                 .setName(REPOSITORY_NAME);
 
-        // Rule : DetectClassExtendThread
-        repo.createRule("extend-thread")
-                .setName("Detect extending Thread")
-                .setHtmlDescription(
-                        "This rule reports classes that extend <code>Thread</code>. " +
-                                "In many projects, concurrency is managed using <code>Runnable</code> " +
-                                "or executor-based frameworks. This rule helps teams identify " +
-                                "direct <code>Thread</code> usage for review."
-                )
-                .setSeverity(Severity.INFO)
-                .setStatus(RuleStatus.READY)
-                .setType(RuleType.CODE_SMELL);
-
         // Rule : EmptyCatchBlockRule
         repo.createRule("empty-catch-block")
                 .setName("Empty Catch Block")
                 .setHtmlDescription(
-                        "This rule detects empty <code>catch</code> blocks. " + "Ignoring exceptions can hide errors and make debugging difficult."
+                        "This rule detects empty <code>catch</code> blocks, including blocks that only contain comments. " +
+                                "Ignoring exceptions can hide errors and make debugging difficult."
                 )
                 .setSeverity(Severity.MAJOR)
                 .setStatus(RuleStatus.READY)
+                .setType(RuleType.BUG)
                 .setTags("bug", "error-handling");
+
+        // Rule : GenericCatchExceptionRule
+        repo.createRule("generic-catch-exception")
+                .setName("Generic exceptions should not be caught")
+                .setHtmlDescription(
+                        "This rule reports <code>catch</code> blocks that handle generic exception types such as " +
+                                "<code>Exception</code>, <code>RuntimeException</code>, or <code>Throwable</code>. " +
+                                "Prefer narrower exception types so error handling stays intentional and predictable."
+                )
+                .setSeverity(Severity.MAJOR)
+                .setStatus(RuleStatus.READY)
+                .setType(RuleType.CODE_SMELL)
+                .setTags("error-handling", "design");
 
         // Rule : HardCodeCredentialRule
         repo.createRule("hardcoded-credential")
@@ -50,31 +52,34 @@ public class JavaRulesDefinition implements RulesDefinition {
                         )
                 .setSeverity(Severity.CRITICAL)
                 .setStatus(RuleStatus.READY)
+                .setType(RuleType.VULNERABILITY)
                 .setTags("security", "credential");
 
-        // Rule : LongMethodRule
-        repo.createRule("long-method")
-                .setName("Method should not be too long")
+        // Rule : LoggedOnlyCatchBlockRule
+        repo.createRule("logged-only-catch")
+                .setName("Catch blocks should not only log and continue")
                 .setHtmlDescription(
-                                "<p>Long methods are difficult to read, understand, and maintain.</p>" +
-                                        "<p>Consider refactoring the method by extracting smaller methods " +
-                                        "to improve readability and maintainability.</p>"
-                        )
+                        "This rule detects <code>catch</code> blocks that only log an exception or call " +
+                                "<code>printStackTrace()</code> without recovery or rethrowing. " +
+                                "That pattern can hide failures and leave the application in an inconsistent state."
+                )
                 .setSeverity(Severity.MAJOR)
                 .setStatus(RuleStatus.READY)
-                .setTags("code-smell", "maintainability");
+                .setType(RuleType.BUG)
+                .setTags("error-handling", "logging");
 
         // Rule : NoSystemOutRule
         repo.createRule("no-system-out")
                 .setName("System.out and System.err should not be used")
                 .setHtmlDescription(
                         "<p>Using <code>System.out</code> or <code>System.err</code> " +
-                                "for logging is not recommended in production environments.</p>" +
+                                "for logging is not recommended in production environments, including <code>print</code>, <code>println</code>, <code>printf</code>, and <code>format</code>.</p>" +
                                 "<p>Use a proper logging framework such as SLF4J or Log4j " +
                                 "to enable log level management and centralized logging.</p>"
                 )
                 .setSeverity(Severity.MINOR)
                 .setStatus(RuleStatus.READY)
+                .setType(RuleType.CODE_SMELL)
                 .setTags("bad-practice", "logging");
 
         repo.done();

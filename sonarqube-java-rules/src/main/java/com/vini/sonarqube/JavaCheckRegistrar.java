@@ -1,10 +1,13 @@
 package com.vini.sonarqube;
 
-import com.vini.sonarqube.rules.*;
+import com.vini.sonarqube.rules.EmptyCatchBlockRule;
+import com.vini.sonarqube.rules.GenericCatchExceptionRule;
+import com.vini.sonarqube.rules.HardCodeCredentialRule;
+import com.vini.sonarqube.rules.LoggedOnlyCatchBlockRule;
+import com.vini.sonarqube.rules.NoSystemOutRule;
 import org.sonar.plugins.java.api.CheckRegistrar;
 import org.sonar.plugins.java.api.JavaCheck;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class JavaCheckRegistrar implements CheckRegistrar {
@@ -18,11 +21,11 @@ public class JavaCheckRegistrar implements CheckRegistrar {
     }
 
     private static Iterable<Class<? extends JavaCheck>> checkClasses() {
-        return Arrays.asList(
-                DetectClassExtendThread.class,
+        return List.of(
                 EmptyCatchBlockRule.class,
+                GenericCatchExceptionRule.class,
                 HardCodeCredentialRule.class,
-                LongMethodRule.class,
+                LoggedOnlyCatchBlockRule.class,
                 NoSystemOutRule.class
         );
     }

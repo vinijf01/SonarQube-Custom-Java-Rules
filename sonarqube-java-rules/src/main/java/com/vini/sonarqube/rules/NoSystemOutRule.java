@@ -7,15 +7,17 @@ import org.sonar.plugins.java.api.tree.MemberSelectExpressionTree;
 import org.sonar.plugins.java.api.tree.MethodInvocationTree;
 import org.sonar.plugins.java.api.tree.Tree;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 @Rule(key = "no-system-out")
 public class NoSystemOutRule extends IssuableSubscriptionVisitor {
 
+    private static final Set<String> PRINT_METHODS = Set.of("print", "println", "printf", "format");
+
     @Override
     public List<Tree.Kind> nodesToVisit() {
-        return Arrays.asList(Tree.Kind.METHOD_INVOCATION);
+        return List.of(Tree.Kind.METHOD_INVOCATION);
     }
 
     @Override
@@ -32,28 +34,26 @@ public class NoSystemOutRule extends IssuableSubscriptionVisitor {
 
         String methodName = memberSelect.identifier().name();
 
-        // println / print
-        if (!("println".equals(methodName) || "print".equals(methodName))) {
+        if (!PRINT_METHODS.contains(methodName)) {
             return;
         }
 
-        // System.out / System.err
         ExpressionTree expression = memberSelect.expression();
 
-       if (expression instanceof MemberSelectExpressionTree) {
-           MemberSelectExpressionTree owner = (MemberSelectExpressionTree) expression;
+        if (!(expression instanceof MemberSelectExpressionTree owner)) {
+            return;
+        }
 
-           boolean isSystem =
-                   "System".equals(owner.expression().toString()) &&
-                           ("out".equals(owner.identifier().name()) || "err".equals(owner.identifier().name()));
+        boolean isSystemStream =
+                "System".equals(owner.expression().toString()) &&
+                        ("out".equals(owner.identifier().name()) || "err".equals(owner.identifier().name()));
 
-           if (isSystem) {
-               reportIssue(
-                       memberSelect,
-                       "Avoid using System.out/System.err. Use a logging framework instead."
-               );
-           }
-       }
+        if (isSystemStream) {
+            reportIssue(
+                    memberSelect,
+                    "Avoid using System.out/System.err for application logging. Use a logger instead."
+            );
+        }
     }
 
 }
