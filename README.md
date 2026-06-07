@@ -196,13 +196,13 @@ It also uploads the built plugin JAR as a workflow artifact.
 ## Evidence
 
 - Custom rules listed in SonarQube: 
-    ![CustomJavaRules.jpg](CustomJavaRules.jpg)
+    ![CustomJavaRules.jpg](CustomJavaRules.png)
 - Rule details in SonarQube: 
-    ![CustomJavaRules-1.jpg](CustomJavaRules-1.jpg)
+    ![CustomJavaRules-1.jpg](CustomJavaRules-1.png)
 - Issues detected in IntelliJ: 
-    ![CustomJavaRules-2.jpg](CustomJavaRules-2.jpg)
+    ![CustomJavaRules-2.jpg](CustomJavaRules-2.png)
 - Issues detected in SonarQube Web UI: 
-    ![CustomJavaRules-3.jpg](CustomJavaRules-3.jpg)
+    ![CustomJavaRules-3.jpg](CustomJavaRules-3.png)
 
 ## License
 
